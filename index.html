@@ -5,262 +5,727 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Fiscaliza CTB</title>
 <style>
-:root{--bg:#0b1220;--card:#152033;--line:#243247;--txt:#eef3fb;--mut:#93a4bd;--ok:#22c55e;--err:#ef4444;--acc:#22d3ee}
+:root{
+  --bg:#0b1220;--card:#152033;--line:#243247;--txt:#eef3fb;--mut:#93a4bd;
+  --ok:#22c55e;--err:#ef4444;--acc:#22d3ee;--warn:#f59e0b;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;line-height:1.45}
-.wrap{max-width:480px;margin:0 auto;padding:12px 12px 100px}
-header{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.95);backdrop-filter:blur(8px);padding:12px 4px 10px;border-bottom:1px solid var(--line);margin-bottom:12px}
-header h1{font-size:1.15rem;color:var(--acc)}
-header p{font-size:.78rem;color:var(--mut);margin-top:2px}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-.chip{border:1px solid var(--line);background:var(--card);color:var(--mut);padding:8px 12px;border-radius:999px;font-size:.78rem;font-weight:600;cursor:pointer}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--bg);color:var(--txt);min-height:100vh;line-height:1.45;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:480px;margin:0 auto;padding:12px 12px 110px}
+header{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.96);backdrop-filter:blur(8px);
+  padding:12px 4px 10px;border-bottom:1px solid var(--line);margin-bottom:12px}
+header h1{font-size:1.15rem;color:var(--acc);letter-spacing:.2px}
+header p{font-size:.76rem;color:var(--mut);margin-top:2px}
+.bar{height:6px;background:#0b1220;border-radius:999px;overflow:hidden;margin-top:8px;border:1px solid var(--line)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#06b6d4,#22d3ee);transition:width .3s}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--mut);padding:8px 12px;
+  border-radius:999px;font-size:.78rem;font-weight:600;cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--acc);color:var(--txt)}
 .chip.on{background:var(--acc);color:#06202a;border-color:var(--acc)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
 .card h2{font-size:.95rem;margin-bottom:8px;color:var(--acc)}
-.meta{font-size:.72rem;color:var(--mut);margin-bottom:8px}
+.meta{font-size:.72rem;color:var(--mut);margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .sit{background:#0f1a2b;border-left:4px solid var(--acc);border-radius:10px;padding:12px;font-size:.92rem}
-label{display:block;font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 6px;font-weight:700}
+label{display:block;font-size:.7rem;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;
+  margin:14px 0 6px;font-weight:700}
+label:first-of-type{margin-top:0}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.opt{border:1px solid var(--line);background:#0b1220;border-radius:10px;padding:12px 10px;font-size:.85rem;cursor:pointer;text-align:center}
+.opts.wide{grid-template-columns:1fr}
+.opt{border:1px solid var(--line);background:#0b1220;border-radius:10px;padding:12px 10px;
+  font-size:.85rem;cursor:pointer;text-align:left;color:var(--txt);font-family:inherit;transition:.12s}
+.opt:hover:not(:disabled){border-color:var(--acc)}
 .opt.on{border-color:var(--acc);background:#0b2a33;color:var(--acc);font-weight:700}
-.btn{width:100%;border:0;border-radius:12px;padding:14px;font-size:1rem;font-weight:800;cursor:pointer;margin-top:10px}
+.opt.right{border-color:var(--ok);background:#0d2418;color:var(--ok);font-weight:700}
+.opt.wrong{border-color:var(--err);background:#2a1114;color:var(--err);font-weight:700}
+.opt.dim{opacity:.42}
+.opt:disabled{cursor:default}
+.btn{width:100%;border:0;border-radius:12px;padding:14px;font-size:1rem;font-weight:800;
+  cursor:pointer;font-family:inherit;transition:.15s}
+.btn:active{transform:scale(.985)}
 .btn-main{background:linear-gradient(135deg,#06b6d4,#0ea5e9);color:#041018}
+.btn-main:disabled{opacity:.35;cursor:not-allowed}
 .btn-sec{background:#1b2a40;color:var(--txt);border:1px solid var(--line)}
-.foot{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:#101a2b;border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;z-index:30}
+.btn-mini{padding:6px 10px;font-size:.72rem;border-radius:8px;width:auto}
+.foot{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:#101a2b;
+  border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;z-index:30}
 .foot .btn{margin:0}
-.gab{margin-top:12px;border-radius:12px;padding:14px;border:1px solid #1f3a2a;background:#0d1f17}
+.gab{margin-top:14px;border-radius:12px;padding:14px;border:1px solid #1f3a2a;background:#0d1f17;animation:pop .2s ease}
 .gab.bad{background:#211014;border-color:#3a1a1f}
-.gab h3{margin-bottom:8px}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.gab h3{margin-bottom:10px;font-size:.95rem}
 .gab table{width:100%;font-size:.85rem;border-collapse:collapse}
-.gab td{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top}
-.gab td:first-child{color:var(--mut);width:40%}
-.score{width:72px;height:72px;border-radius:50%;border:5px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;margin:0 auto 10px}
+.gab td{padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top}
+.gab td:first-child{color:var(--mut);width:42%;padding-right:8px}
+.gab tr:last-child td{border-bottom:0}
+.fund{margin-top:12px;font-size:.85rem;color:#b7c7db;background:rgba(0,0,0,.25);
+  padding:10px;border-radius:8px;border-left:3px solid var(--acc)}
+.score{width:74px;height:74px;border-radius:50%;border:5px solid var(--line);display:flex;
+  align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;margin:0 auto 10px}
 .score.ok{border-color:var(--ok);color:var(--ok)}
-.score.mid{border-color:#f59e0b;color:#f59e0b}
+.score.mid{border-color:var(--warn);color:var(--warn)}
 .score.bad{border-color:var(--err);color:var(--err)}
-.toast{position:fixed;top:64px;left:50%;transform:translateX(-50%);background:#123;border:1px solid var(--acc);color:var(--txt);padding:10px 14px;border-radius:10px;z-index:50;font-size:.85rem}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#0f2233;
+  border:1px solid var(--acc);color:var(--txt);padding:10px 16px;border-radius:10px;z-index:50;
+  font-size:.85rem;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:pop .2s ease}
+.empty{text-align:center;color:var(--mut);padding:40px 12px;font-size:.9rem}
 </style>
 </head>
 <body>
+
 <div class="wrap">
-<header>
-<h1>Fiscaliza CTB</h1>
-<p>Treino Agente de Transito · DETRAN-SP · <span id="qtd">0</span> perguntas</p>
-</header>
-<div id="app"></div>
+  <header>
+    <h1>Fiscaliza CTB</h1>
+    <p>Treino Agente de Trânsito · DETRAN-SP · <span id="qtd">0</span> questões</p>
+    <div class="bar"><i id="barra"></i></div>
+  </header>
+  <div id="app"></div>
 </div>
+
+<div class="foot">
+  <button class="btn btn-sec" data-act="prev">◀ Anterior</button>
+  <button class="btn btn-main" data-act="next">Próxima ▶</button>
+</div>
+
 <script>
-const Q=[];
-function add(o){Q.push(o)}
-function vel(lim,vel,art,grav,pts,pen,ret){
-add({id:"VEL_"+lim+"_"+vel,tema:"Velocidade",
-situacao:"Via com limite de "+lim+" km/h. Velocidade considerada: "+vel+" km/h.",
-irregularidade:"Excesso de velocidade ("+vel+" em "+lim+")",
-enquadramento:"Art. 218, "+art+", CTB",descricao:"Transitar acima do limite",
-gravidade:grav,pontos:pts,penalidade:pen,medida:ret?"retencao do veiculo":"nenhuma",
-retencao:!!ret,remocao:false,recolhe_doc:false,
-fundamento:"Art. 218: ate 20% = media (I); >20% ate 50% = grave (II); >50% = gravissima (III, multa x3 + suspensao). "+lim+"x1,2="+Math.round(lim*1.2)+"; "+lim+"x1,5="+Math.round(lim*1.5)+"."});
-}
-[[40,45,"I","media",4,"multa",0],[40,50,"II","grave",5,"multa",0],[40,62,"III","gravissima",7,"multa (tres vezes) e suspensao",1],
-[50,58,"I","media",4,"multa",0],[50,61,"II","grave",5,"multa",0],[50,76,"III","gravissima",7,"multa (tres vezes) e suspensao",1],
-[60,70,"I","media",4,"multa",0],[60,80,"II","grave",5,"multa",0],[60,95,"III","gravissima",7,"multa (tres vezes) e suspensao",1],
-[80,90,"I","media",4,"multa",0],[80,110,"II","grave",5,"multa",0],[80,125,"III","gravissima",7,"multa (tres vezes) e suspensao",1],
-[100,115,"I","media",4,"multa",0],[100,135,"II","grave",5,"multa",0],[100,155,"III","gravissima",7,"multa (tres vezes) e suspensao",1],
-[110,125,"I","media",4,"multa",0],[110,145,"II","grave",5,"multa",0],[110,170,"III","gravissima",7,"multa (tres vezes) e suspensao",1],
-[30,35,"I","media",4,"multa",0],[30,40,"II","grave",5,"multa",0],[30,50,"III","gravissima",7,"multa (tres vezes) e suspensao",1],
-[70,80,"I","media",4,"multa",0],[70,100,"II","grave",5,"multa",0],[70,110,"III","gravissima",7,"multa (tres vezes) e suspensao",1],
-[90,105,"I","media",4,"multa",0],[90,120,"II","grave",5,"multa",0],[90,140,"III","gravissima",7,"multa (tres vezes) e suspensao",1]
-].forEach(a=>vel(a[0],a[1],a[2],a[3],a[4],a[5],a[6]));
+/* ============================================================
+   1. BANCO DE QUESTÕES
+   ============================================================ */
+const Q = [];
 
-function pack(tema,rows){
-rows.forEach((m,i)=>add({id:tema.slice(0,3)+"_"+i,tema:tema,situacao:m[0],irregularidade:m[1],enquadramento:m[2],descricao:m[3],
-gravidade:m[4],pontos:m[5],penalidade:m[6],medida:m[7],retencao:!!m[8],remocao:!!m[9],recolhe_doc:!!m[10],fundamento:m[11]}));
+function add(o){ o.id = 'q' + (Q.length + 1); Q.push(o); }
+
+/* ---- Infração (quiz de 5 campos) ---- */
+function inf(tema, situacao, irregularidade, enquadramento, gravidade, pontos,
+             penalidade, medida, flags, fundamento){
+  add({
+    tipo:'infracao', tema, situacao, irregularidade, enquadramento,
+    gravidade, pontos, penalidade, medida,
+    retencao: !!flags[0], remocao: !!flags[1], recolhe_doc: !!flags[2],
+    fundamento
+  });
 }
 
-pack("Motocicletas",[
-["Condutor de moto sem capacete.","Sem capacete","Art. 244, I, CTB","Conduzir moto sem capacete","gravissima",7,"multa e suspensao","retencao + recolhimento CNH",1,0,1,"Art. 244, I. Gravissima. Multa + suspensao. Retencao e recolhimento da CNH."],
-["Passageiro de moto sem capacete.","Passageiro sem capacete","Art. 244, I, CTB","Passageiro sem capacete","gravissima",7,"multa e suspensao","retencao + recolhimento",1,0,1,"Art. 244, I vale para passageiro."],
-["Moto com descarga livre.","Descarga livre","Art. 230, XI, CTB","Descarga livre / anti-poluente","grave",5,"multa","retencao para regularizar",1,0,0,"Art. 230, XI. Retencao, nao remocao automatica."],
-["Moto com crianca de 7 anos.","Crianca na moto","Art. 244, V, CTB","Crianca menor de 10 anos","gravissima",7,"multa e suspensao","retencao",1,0,0,"Art. 244, V."],
-["Capacete sem viseira conforme Contran.","Capacete irregular","Art. 244, I, CTB","Capacete fora da norma","gravissima",7,"multa e suspensao","retencao + recolhimento",1,0,1,"Art. 244, I + resolucoes."],
-["Moto com farol apagado de dia.","Farol apagado","Art. 244 / 40, CTB","Farol apagado","media",4,"multa","nenhuma",0,0,0,"Luz baixa obrigatoria em moto."],
-["Passageiro fora do assento.","Passageiro irregular","Art. 244, II, CTB","Passageiro em desacordo","gravissima",7,"multa e suspensao","retencao",1,0,0,"Art. 244, II."],
-["Moto com placa ilegivell.","Placa ilegivel","Art. 230, I, CTB","Placa ilegivel","grave",5,"multa","retencao",1,0,0,"Art. 230, I."],
-["Moto com pneu careca.","Pneu ruim","Art. 230, XVIII, CTB","Mau estado","grave",5,"multa","retencao",1,0,0,"Art. 230, XVIII."],
-["Moto sem espelho.","Sem espelho","Art. 230, IX, CTB","Equipamento obrigatorio","grave",5,"multa","retencao",1,0,0,"Art. 230, IX."]
-]);
-
-pack("Veiculos",[
-["Carro sem cinto no condutor.","Sem cinto","Art. 167, CTB","Sem cinto","grave",5,"multa","retencao",1,0,0,"Art. 167."],
-["Passageiro frente sem cinto.","Passageiro sem cinto","Art. 167, CTB","Sem cinto","grave",5,"multa","retencao",1,0,0,"Art. 167."],
-["Crianca 5 anos no banco da frente sem bebe conforto/cadeirinha.","Crianca sem dispositivo","Art. 168 + Res. 819","Transporte de crianca irregular","gravissima",7,"multa","retencao",1,0,0,"Art. 168 + Res. 819/2021."],
-["Crianca 8 anos com 1,30 m so com cinto na frente.","Altura <1,45 m","Art. 168 + Res. 819","Dispositivo obrigatorio","gravissima",7,"multa","retencao",1,0,0,"Idade + altura."],
-["Farol queimado.","Equipamento inoperante","Art. 230, IX, CTB","Equipamento obrigatorio","grave",5,"multa","retencao",1,0,0,"Art. 230, IX. Regularizou: libera, multa fica."],
-["Pelicula muito escura.","Pelicula irregular","Art. 230 + Res. CONTRAN","Fora do padrao","grave",5,"multa","retencao",1,0,0,"Transmissao luminosa."],
-["Estacionado na calcada.","Calcada","Art. 181, VIII, CTB","Sobre calcada","media",4,"multa","remocao",0,1,0,"Art. 181, VIII — REMOCAO."],
-["Estacionado onde a placa proibe.","Local proibido","Art. 181, XVII, CTB","Sinalizacao proibe","media",4,"multa","remocao",0,1,0,"Art. 181, XVII — REMOCAO."],
-["Vaga PCD sem credencial.","Vaga PCD","Art. 181, XX, CTB","Sem credencial","gravissima",7,"multa","remocao",0,1,0,"Art. 181, XX."],
-["Vaga idoso sem credencial.","Vaga idoso","Art. 181, XX, CTB","Sem credencial","gravissima",7,"multa","remocao",0,1,0,"Art. 181, XX."],
-["Parabrisa trincado.","Mau estado","Art. 230, XVIII, CTB","Compromete seguranca","grave",5,"multa","retencao",1,0,0,"Art. 230."],
-["Pneus carecas.","Pneus","Art. 230, XVIII, CTB","Mau estado","grave",5,"multa","retencao",1,0,0,"Art. 230, XVIII."],
-["Chassi adulterado.","Chassi adulterado","Art. 230, V, CTB","Identificacao falsificada","gravissima",7,"multa e apreensao","remocao + documentos",0,1,1,"Art. 230, V + possivel crime CP 311."],
-["Placa adulterada.","Placa adulterada","Art. 230, I/V, CTB","Identificacao adulterada","gravissima",7,"multa e apreensao","remocao",0,1,1,"Art. 230 + crime."],
-["Caminhao com excesso de peso.","Excesso de peso","Art. 231, V, CTB","Excesso de peso","media",4,"multa","retencao + transbordo",1,0,0,"Art. 231, V + 269, VIII."],
-["Rachinha na avenida.","Disputar corrida","Art. 173, CTB","Racha","gravissima",7,"multa x10, suspensao e apreensao","remocao + recolhimento",0,1,1,"Art. 173. Multa x10. Crime 308."],
-["Competicao em via sem autorizacao.","Competicao","Art. 174, CTB","Evento sem autorizacao","gravissima",7,"multa x10, suspensao","remocao",0,1,1,"Art. 174."],
-["Usou celular na mao dirigindo.","Celular","Art. 252, VI, CTB","Telefone celular","media",4,"multa","nenhuma",0,0,0,"Art. 252, VI."],
-["Som automotivo excessivo.","Som alto","Art. 228, CTB","Som excessivo","grave",5,"multa","retencao",1,0,0,"Art. 228."],
-["Carga solta sem amarracao.","Carga insegura","Art. 235, CTB","Carga mal acondicionada","grave",5,"multa","retencao",1,0,0,"Carga e seguranca."]
-]);
-
-pack("Habilitacao",[
-["Sem CNH e sem PPD.","Sem habilitacao","Art. 162, I, CTB","Sem CNH/PPD","gravissima",7,"multa x3 e apreensao","retencao ate habilitado",1,0,0,"Art. 162, I. Multa x3."],
-["CNH B dirigindo onibus (D).","Categoria diferente","Art. 162, III, CTB","Categoria diversa","gravissima",7,"multa e apreensao","retencao ate habilitado",1,0,0,"Art. 162, III."],
-["CNH cassada e dirigindo.","CNH cassada","Art. 162, II, CTB","Cassada ou suspensa","gravissima",7,"multa x3 e apreensao","retencao + recolhimento",1,0,1,"Art. 162, II."],
-["CNH suspensa e dirigindo.","Suspensa + cassacao","Art. 162, II + 263, I","Dirigir na suspensao gera cassacao","gravissima",7,"multa x3 + cassacao","retencao + recolhimento",1,0,1,"162, II e 263, I."],
-["Bafometro 0,15 mg/L.","Alcool","Art. 165, CTB","Sob influencia de alcool","gravissima",7,"multa x10 e suspensao 12 meses","retencao + recolhimento",1,0,1,"Art. 165. Tolerancia zero. Multa x10."],
-["Bafometro 0,28 mg/L sem sinais.","So administrativo","Art. 165, CTB","Administrativo (crime so >=0,3 ou sinais)","gravissima",7,"multa x10 e suspensao 12 meses","retencao + recolhimento",1,0,1,"Crime 306: >=0,3 mg/L ou sinais."],
-["Bafometro 0,35 mg/L.","Alcool + crime","Art. 165 + 306, CTB","Administrativo + crime","gravissima",7,"multa x10 + suspensao (+penal)","retencao + recolhimento",1,0,1,"165 + 306."],
-["Recusou o bafometro.","Recusa","Art. 165-A, CTB","Recusa ao teste","gravissima",7,"multa x10 e suspensao 12 meses","retencao + recolhimento",1,0,1,"165-A = mesma pena do 165."],
-["21 pontos em 12 meses com 1 gravissima. Suspende?","Pontos 261","Art. 261, I, b","Limite 30 com 1 gravissima","—",0,"ainda nao (21<30)","—",0,0,0,"20 (2+ grav), 30 (1 grav), 40 (nenhuma)."],
-["19 pontos com 2 gravissimas. Suspende?","Pontos 261","Art. 261, I, a","Limite 20 com 2+ grav","—",0,"ainda nao (19<20)","—",0,0,0,"Teto 20 com 2+ gravissimas."],
-["20 pontos com 2 gravissimas.","Atingiu 20","Art. 261, I, a","Suspensao","—",0,"suspensao","processo DETRAN",0,0,0,"Atingiu alinea a."],
-["40 pontos sem gravissima.","Atingiu 40","Art. 261, I, c","Suspensao","—",0,"suspensao","processo DETRAN",0,0,0,"Alinea c."],
-["30 pontos com 1 gravissima.","Atingiu 30","Art. 261, I, b","Suspensao","—",0,"suspensao","processo DETRAN",0,0,0,"Alinea b."],
-["PPD com infração gravissima.","PPD","Art. 148 e regras","Pode nao converter em CNH","gravissima",7,"conforme infracao + nao conversao","conforme",0,0,0,"Gravissima na permissao prejudica CNH definitiva."],
-["CNH vencida (hipotese do 162).","CNH vencida","Art. 162, V, CTB","Dirigir com CNH vencida","gravissima",7,"multa","retencao",1,0,0,"Art. 162, V."]
-]);
-
-pack("Sinalizacao",[
-["Avancou o sinal vermelho.","Avanco de sinal","Art. 208, CTB","Sinal vermelho","gravissima",7,"multa","nenhuma",0,0,0,"Art. 208. Sem retencao automatica."],
-["Nao parou no PARE.","Pare","Art. 208, CTB","Parada obrigatoria","gravissima",7,"multa","nenhuma",0,0,0,"Art. 208."],
-["Nao deu preferencia ao pedestre na faixa.","Preferencia pedestre","Art. 214, I, CTB","Pedestre na faixa","gravissima",7,"multa","nenhuma",0,0,0,"Art. 214, I."],
-["Nao reduziu ao se aproximar da faixa.","Reduzir na faixa","Art. 220, III, CTB","Nao reduzir","gravissima",7,"multa","nenhuma",0,0,0,"Art. 220, III. Diferente do 214."],
-["Ultrapassou em ponte na contramao.","Ultrapassagem","Art. 203, CTB","Local proibido","gravissima",7,"multa x5","nenhuma",0,0,0,"Art. 203. Multa x5."],
-["Ultrapassou em linha continua.","Linha continua","Art. 203, CTB","Ultrapassagem proibida","gravissima",7,"multa x5","nenhuma",0,0,0,"Art. 203."],
-["Forcou passagem entre carros opostos.","Forcar passagem","Art. 191, CTB","Forcar passagem","gravissima",7,"multa x10 e suspensao","nenhuma",0,0,0,"Art. 191. Multa x10."],
-["Conversao proibida.","Conversao","Art. 207, CTB","Conversao proibida","grave",5,"multa","nenhuma",0,0,0,"Art. 207."],
-["Contramão em via de mao unica.","Contramao","Art. 186, CTB","Contramao","grave",5,"multa","nenhuma",0,0,0,"Art. 186."],
-["Transpos bloqueio policial.","Bloqueio","Art. 210, CTB","Bloqueio policial","gravissima",7,"multa, apreensao e suspensao","remocao + recolhimento",0,1,1,"Art. 210."],
-["Nao deu passagem a ambulancia.","Emergencia","Art. 189, CTB","Nao dar passagem","gravissima",7,"multa","nenhuma",0,0,0,"Art. 189."],
-["Seguiu viatura de emergencia colado.","Seguir emergencia","Art. 190, CTB","Seguir veiculo de urgencia","grave",5,"multa","nenhuma",0,0,0,"Art. 190."],
-["Ultrapassou pelo acostamento.","Acostamento","Art. 194, CTB","Transitar no acostamento","gravissima",7,"multa","nenhuma",0,0,0,"Art. 194."],
-["Retorno proibido.","Retorno","Art. 206, CTB","Retorno proibido","grave",5,"multa","nenhuma",0,0,0,"Art. 206."],
-["Parou sobre a faixa no semaforo.","Faixa no semaforo","Art. 183, CTB","Parar sobre a faixa","media",4,"multa","nenhuma",0,0,0,"Art. 183."],
-["Nao manteve distancia.","Distancia","Art. 192, CTB","Distancia de seguranca","grave",5,"multa","nenhuma",0,0,0,"Art. 192."],
-["Nao reduziu em area escolar.","Escola","Art. 220, CTB","Proximidade de escola","gravissima",7,"multa","nenhuma",0,0,0,"Art. 220."],
-["Velocidade incompativel com chuva forte.","Incompativel","Art. 219, CTB","Velocidade incompativel","grave",5,"multa","nenhuma",0,0,0,"Art. 219."]
-]);
-
-pack("Medidas",[
-["Trocou o farol na hora. Multa some?","Regularizou no local","Art. 230 + 269","Multa fica; retencao cessa","grave",5,"multa permanece","retencao cessa",1,0,0,"Infracao ja consumada."],
-["Retencao e remocao sao a mesma coisa?","Retencao x remocao","Art. 269, I e II","Nao: retencao no local; remocao = patio","—",0,"—","sao diferentes",0,0,0,"269 I retencao; II remocao."],
-["Estacionamento proibido: patio?","Remocao","Art. 181 + 269","Sim, remocao","media",4,"multa","remocao",0,1,0,"Varias hipoteses do 181 tem remocao."],
-["Duas infracoes na mesma abordagem.","Cumulacao","Art. 266, CTB","Aplica as duas","—",0,"cumulativas","conforme cada",0,0,0,"Art. 266."],
-["Infracao media, limpo 12 meses. Advertencia?","Advertencia","Art. 267, CTB","Devera ser advertencia","media",0,"advertencia por escrito","—",0,0,0,"Art. 267: dever para leve/media sem outras."],
-["Primeiro recurso da multa?","JARI","Arts. 16, 17, 285","JARI","—",0,"—","—",0,0,0,"1a instancia: JARI. Depois CETRAN."],
-["Recusou entregar CNH.","Recusa documento","Art. 238, CTB","Recusar entregar documentos","gravissima",7,"multa e apreensao","remocao + recolhimento",0,1,1,"Art. 238."],
-["Pontos oficiais?","Tabela 259","Art. 259","7 / 5 / 4 / 3","—",0,"—","—",0,0,0,"Gravissima 7, grave 5, media 4, leve 3."],
-["Via municipal: quem autua estacionamento?","Competencia","Art. 24, CTB","Orgao municipal","—",0,"—","—",0,0,0,"Circunscricao municipal."],
-["Suspensao por pontos: quem aplica?","DETRAN","Art. 22 e 261","DETRAN (processo)","—",0,"suspensao","—",0,0,0,"Agente autua; DETRAN processa."],
-["AIT sem placa.","Requisitos AIT","Art. 280","Risco de nulidade","—",0,"—","—",0,0,0,"Art. 280 requisitos minimos."],
-["Condutor nao identificado. Quem paga?","Responsabilidade","Art. 257","Proprietario","—",0,"multa ao proprietario","—",0,0,0,"Art. 257."],
-["Medida administrativa apaga multa?","Natureza","Art. 269 §2","Nao, e complementar","—",0,"—","—",0,0,0,"Medida nao substitui penalidade."],
-["Fatores x3 x5 x10.","Fatores","Arts. 162,165,173,191,203,218","x10 165/173/191; x5 203; x3 162 e 218 III","—",0,"—","—",0,0,0,"Memorizar fatores."],
-["Prioridade em sinistro com vitima.","Vida primeiro","Art. 1 §5","Socorro primeiro","—",0,"—","—",0,0,0,"Defesa da vida."]
-]);
-
-// completar ate 200
-const lims=[40,50,60,70,80,90,100,110];
-const faixas=[{k:1.1,art:"I",g:"media",p:4,pen:"multa",r:0},{k:1.3,art:"II",g:"grave",p:5,pen:"multa",r:0},{k:1.55,art:"III",g:"gravissima",p:7,pen:"multa (tres vezes) e suspensao",r:1}];
-let n=0;
-while(Q.length<200){
-const lim=lims[n%lims.length],f=faixas[n%faixas.length],v=Math.round(lim*f.k);
-add({id:"F"+Q.length,tema:"Velocidade",
-situacao:"Radar: limite "+lim+" km/h, velocidade considerada "+v+" km/h.",
-irregularidade:"Excesso de velocidade",enquadramento:"Art. 218, "+f.art+", CTB",
-descricao:"Faixa do inciso "+f.art,gravidade:f.g,pontos:f.p,penalidade:f.pen,
-medida:f.r?"retencao":"nenhuma",retencao:!!f.r,remocao:false,recolhe_doc:false,
-fundamento:"Art. 218. "+lim+" -> 20%="+Math.round(lim*1.2)+", 50%="+Math.round(lim*1.5)+". Vel "+v+"."});
-n++;
+/* ---- Teoria (múltipla escolha simples) ---- */
+function teo(tema, situacao, alternativas, correta, fundamento){
+  add({ tipo:'teoria', tema, situacao, alternativas, correta, fundamento });
 }
 
-document.getElementById("qtd").textContent=Q.length;
+/* ---------- VELOCIDADE — Art. 218 ---------- */
+const LIMITES = [
+  [30,[34,40,50]],  [40,[46,52,62]],  [50,[57,65,78]],
+  [60,[69,78,93]],  [70,[80,91,109]], [80,[92,104,124]],
+  [90,[103,117,140]],[100,[115,130,155]],[110,[126,143,170]]
+];
 
-const TEMAS=["Todos","Velocidade","Motocicletas","Veiculos","Habilitacao","Sinalizacao","Medidas"];
-const state={tema:"Todos",lista:[],i:0,q:null,answered:false,stats:JSON.parse(localStorage.getItem("fc_stats")||'{"ok":0,"bad":0}'),sel:{}};
+LIMITES.forEach(function(par){
+  const lim = par[0];
+  par[1].forEach(function(v){
+    const pct = (v - lim) / lim * 100;
+    let art, g, p, pen;
+    if (pct <= 20)      { art='I';   g='media';      p=4; pen='Multa'; }
+    else if (pct <= 50) { art='II';  g='grave';      p=5; pen='Multa'; }
+    else                { art='III'; g='gravissima'; p=7; pen='Multa (3x) e suspensão do direito de dirigir'; }
 
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function filt(){state.lista=state.tema==="Todos"?shuffle([...Q]):shuffle(Q.filter(x=>x.tema===state.tema));state.i=0;state.q=state.lista[0];state.answered=false;state.sel={};}
-function toast(t){const e=document.createElement("div");e.className="toast";e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),1800);}
-function opt(g,v,lab){return '<div class="opt'+(state.sel[g]===v?' on':'')+'" onclick="choose(\''+g+'\',\''+String(v).replace(/'/g,"\\'")+'\')">'+lab+'</div>';}
-function choose(g,v){if(state.answered)return;state.sel[g]=v;render();}
-function setTema(t){state.tema=t;filt();render();}
-function nextQ(){state.i=Math.min(state.i+1,state.lista.length-1);state.q=state.lista[state.i];state.answered=false;state.sel={};state.last=null;render();window.scrollTo(0,0);}
-function prevQ(){state.i=Math.max(state.i-1,0);state.q=state.lista[state.i];state.answered=false;state.sel={};state.last=null;render();window.scrollTo(0,0);}
+    add({
+      tipo:'infracao', tema:'Velocidade',
+      situacao:'Radar registrou ' + v + ' km/h em via cujo limite é ' + lim + ' km/h.',
+      irregularidade:'Excesso de velocidade',
+      enquadramento:'Art. 218, ' + art + ', CTB',
+      gravidade:g, pontos:p, penalidade:pen,
+      medida: art === 'III' ? 'Suspensão do direito de dirigir (processo)' : 'Nenhuma',
+      retencao:false, remocao:false, recolhe_doc:false,
+      fundamento:'Art. 218 do CTB: até 20% → inciso I (média); mais de 20% até 50% → inciso II (grave); ' +
+        'acima de 50% → inciso III (gravíssima, multa 3x + suspensão). ' +
+        'Excesso de ' + pct.toFixed(1) + '% (limite ' + lim + ' km/h).'
+    });
+  });
+});
 
-function buildArts(q){
-const pool=[q.enquadramento,"Art. 218, I, CTB","Art. 218, II, CTB","Art. 218, III, CTB","Art. 244, I, CTB","Art. 230, IX, CTB","Art. 167, CTB","Art. 208, CTB","Art. 162, I, CTB","Art. 165, CTB","Art. 181, XVII, CTB","Art. 173, CTB"];
-return shuffle([...new Set(pool)]).slice(0,6);
+/* ---------- MOTOCICLETAS ---------- */
+const TM = 'Motocicletas';
+inf(TM,'Condutor de motocicleta circulando sem capacete.','Sem capacete','Art. 244, I, CTB',
+  'gravissima',7,'Multa e suspensão do direito de dirigir','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Art. 244, I. Infração gravíssima, com suspensão e recolhimento do documento de habilitação.');
+inf(TM,'Passageiro de motocicleta sem capacete de segurança.','Passageiro sem capacete','Art. 244, I, CTB',
+  'gravissima',7,'Multa e suspensão do direito de dirigir','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'O Art. 244, I alcança também o passageiro transportado sem capacete.');
+inf(TM,'Motocicleta com descarga livre (escapamento alterado).','Descarga livre','Art. 230, XI, CTB',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 230, XI. A retenção ocorre até a regularização — não há remoção automática ao pátio.');
+inf(TM,'Motocicleta transportando criança de 7 anos.','Criança na moto','Art. 244, V, CTB',
+  'gravissima',7,'Multa e suspensão do direito de dirigir','Retenção do veículo',
+  [1,0,0],'Art. 244, V: transportar criança menor de 10 anos em motocicleta.');
+inf(TM,'Condutor com capacete sem viseira nem óculos de proteção.','Capacete irregular','Art. 244, I, CTB',
+  'gravissima',7,'Multa e suspensão do direito de dirigir','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Art. 244, I combinado com as resoluções do CONTRAN sobre equipamentos de segurança.');
+inf(TM,'Motocicleta transitando de dia com o farol apagado.','Farol apagado','Art. 244 / Art. 40, CTB',
+  'media',4,'Multa','Nenhuma',
+  [0,0,0],'Uso obrigatório do farol baixo aceso durante o dia para motocicletas.');
+inf(TM,'Passageiro transportado fora do assento traseiro.','Passageiro irregular','Art. 244, II, CTB',
+  'gravissima',7,'Multa e suspensão do direito de dirigir','Retenção do veículo',
+  [1,0,0],'Art. 244, II: transportar passageiro em desacordo com as normas.');
+inf(TM,'Placa da motocicleta ilegível.','Placa ilegível','Art. 230, I, CTB',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 230, I: conduzir veículo com identificação externa em desacordo com as normas.');
+inf(TM,'Motocicleta com pneu traseiro careca.','Pneu careca','Art. 230, XVIII, CTB',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 230, XVIII: conduzir veículo em mau estado de conservação, comprometendo a segurança.');
+inf(TM,'Motocicleta sem espelho retrovisor.','Sem espelho','Art. 230, IX, CTB',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 230, IX: conduzir veículo com equipamento obrigatório em desacordo ou ineficiente.');
+
+/* ---------- VEÍCULOS ---------- */
+const TV = 'Veículos';
+inf(TV,'Condutor de automóvel sem cinto de segurança.','Sem cinto','Art. 167, CTB',
+  'grave',5,'Multa','Retenção do veículo até a colocação do cinto',
+  [1,0,0],'Art. 167. A retenção cessa assim que o cinto é colocado — a multa permanece.');
+inf(TV,'Passageiro do banco dianteiro sem cinto de segurança.','Passageiro sem cinto','Art. 167, CTB',
+  'grave',5,'Multa','Retenção do veículo até a colocação do cinto',
+  [1,0,0],'Art. 167 aplica-se ao condutor e aos passageiros.');
+inf(TV,'Criança de 5 anos no banco dianteiro sem cadeirinha nem bebê-conforto.','Criança sem dispositivo','Art. 168 + Res. 819/2021',
+  'gravissima',7,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 168 do CTB + Resolução CONTRAN 819/2021 (transporte de crianças).');
+inf(TV,'Criança de 8 anos, 1,30 m, no banco dianteiro apenas com o cinto de 3 pontos.','Altura inferior a 1,45 m','Art. 168 + Res. 819/2021',
+  'gravissima',7,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'A regra combina idade E altura: menores de 10 anos que não atingiram 1,45 m exigem dispositivo de retenção.');
+inf(TV,'Farol dianteiro esquerdo queimado.','Equipamento inoperante','Art. 230, IX, CTB',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 230, IX. Regularizado no local, o veículo é liberado — a multa permanece.');
+inf(TV,'Película muito escura nos vidros laterais dianteiros.','Película irregular','Art. 230 + Res. CONTRAN',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Transmissão luminosa fora dos limites estabelecidos pelo CONTRAN.');
+inf(TV,'Veículo estacionado sobre a calçada.','Estacionado na calçada','Art. 181, VIII, CTB',
+  'media',4,'Multa','Remoção do veículo ao pátio',
+  [0,1,0],'Art. 181, VIII — estacionar sobre a calçada gera multa E remoção.');
+inf(TV,'Veículo estacionado em local com placa de proibição.','Local proibido','Art. 181, XVII, CTB',
+  'media',4,'Multa','Remoção do veículo ao pátio',
+  [0,1,0],'Art. 181, XVII — estacionar em desacordo com a sinalização gera multa E remoção.');
+inf(TV,'Veículo em vaga de PCD sem credencial.','Vaga PCD sem credencial','Art. 181, XX, CTB',
+  'gravissima',7,'Multa','Remoção do veículo ao pátio',
+  [0,1,0],'Art. 181, XX — vaga reservada a pessoa com deficiência sem credencial.');
+inf(TV,'Veículo em vaga de idoso sem credencial.','Vaga de idoso sem credencial','Art. 181, XX, CTB',
+  'gravissima',7,'Multa','Remoção do veículo ao pátio',
+  [0,1,0],'Art. 181, XX — vaga reservada a idoso sem credencial.');
+inf(TV,'Para-brisa com trinca que compromete a visão do condutor.','Mau estado de conservação','Art. 230, XVIII, CTB',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 230, XVIII — mau estado de conservação comprometendo a segurança.');
+inf(TV,'Pneus lisos (carecas) nos dois eixos.','Pneus carecas','Art. 230, XVIII, CTB',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 230, XVIII.');
+inf(TV,'Veículo com chassi adulterado.','Chassi adulterado','Art. 230, V, CTB',
+  'gravissima',7,'Multa e apreensão do veículo','Remoção do veículo e retenção dos documentos',
+  [0,1,1],'Art. 230, V — identificação adulterada. Pode configurar crime (CP, art. 311).');
+inf(TV,'Placa com caracteres adulterados.','Placa adulterada','Art. 230, I e V, CTB',
+  'gravissima',7,'Multa e apreensão do veículo','Remoção do veículo e retenção dos documentos',
+  [0,1,1],'Art. 230 — adulteração de identificação veicular.');
+inf(TV,'Caminhão com excesso de peso sobre o eixo traseiro.','Excesso de peso','Art. 231, V, CTB',
+  'media',4,'Multa','Retenção do veículo e transbordo da carga',
+  [1,0,0],'Art. 231, V combinado com o Art. 269, VIII (transbordo da carga).');
+inf(TV,'Dois veículos disputando corrida em avenida movimentada.','Racha','Art. 173, CTB',
+  'gravissima',7,'Multa (10x), suspensão do direito de dirigir e apreensão do veículo','Remoção do veículo e recolhimento da CNH',
+  [0,1,1],'Art. 173 — multa multiplicada por 10. Também configura crime de trânsito (art. 308).');
+inf(TV,'Competição automobilística em via pública sem autorização.','Competição não autorizada','Art. 174, CTB',
+  'gravissima',7,'Multa (10x) e suspensão do direito de dirigir','Remoção do veículo',
+  [0,1,1],'Art. 174 — promoção de competição não autorizada em via pública.');
+inf(TV,'Condutor usando telefone celular na mão enquanto dirige.','Celular ao volante','Art. 252, VI, CTB',
+  'media',4,'Multa','Nenhuma',
+  [0,0,0],'Art. 252, VI — dirigir segurando ou manuseando telefone celular.');
+inf(TV,'Som automotivo em volume excessivo incomodando a vizinhança.','Som excessivo','Art. 228, CTB',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 228 — perturbação do sossego com som acima dos limites.');
+inf(TV,'Carga solta na carroceria, sem amarração.','Carga mal acondicionada','Art. 235, CTB',
+  'grave',5,'Multa','Retenção do veículo até regularização',
+  [1,0,0],'Art. 235 — carga mal acondicionada ou sem amarração.');
+
+/* ---------- HABILITAÇÃO ---------- */
+const TH = 'Habilitação';
+inf(TH,'Condutor sem CNH e sem PPD dirigindo automóvel.','Sem habilitação','Art. 162, I, CTB',
+  'gravissima',7,'Multa (3x) e apreensão do veículo','Retenção do veículo até apresentação de condutor habilitado',
+  [1,0,0],'Art. 162, I — multa multiplicada por 3.');
+inf(TH,'Condutor com CNH categoria B dirigindo ônibus (categoria D).','Categoria diversa','Art. 162, III, CTB',
+  'gravissima',7,'Multa e apreensão do veículo','Retenção do veículo até apresentação de condutor habilitado',
+  [1,0,0],'Art. 162, III — dirigir com CNH de categoria diferente da exigida.');
+inf(TH,'Condutor com CNH cassada dirigindo.','CNH cassada','Art. 162, II, CTB',
+  'gravissima',7,'Multa (3x) e apreensão do veículo','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Art. 162, II — dirigir com CNH cassada.');
+inf(TH,'Condutor com CNH suspensa dirigindo.','CNH suspensa','Art. 162, II + Art. 263, I, CTB',
+  'gravissima',7,'Multa (3x) e apreensão do veículo','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Art. 162, II + Art. 263, I — dirigir durante a suspensão gera processo de cassação.');
+inf(TH,'Bafômetro registra 0,15 mg/L de álcool no ar alveolar.','Sob influência de álcool','Art. 165, CTB',
+  'gravissima',7,'Multa (10x) e suspensão do direito de dirigir por 12 meses','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Art. 165 — tolerância zero para álcool. Multa multiplicada por 10.');
+inf(TH,'Bafômetro registra 0,28 mg/L, sem sinais aparentes de embriaguez.','Infração administrativa','Art. 165, CTB',
+  'gravissima',7,'Multa (10x) e suspensão do direito de dirigir por 12 meses','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Crime de trânsito (art. 306) só a partir de 0,3 mg/L ou com sinais de alteração da capacidade psicomotora.');
+inf(TH,'Bafômetro registra 0,35 mg/L.','Álcool + crime de trânsito','Art. 165 + Art. 306, CTB',
+  'gravissima',7,'Multa (10x) e suspensão por 12 meses, além da responsabilidade penal','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Art. 165 (administrativo) + Art. 306 do CTB (crime).');
+inf(TH,'Condutor se recusa a soprar o bafômetro.','Recusa ao teste','Art. 165-A, CTB',
+  'gravissima',7,'Multa (10x) e suspensão do direito de dirigir por 12 meses','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Art. 165-A — a recusa tem a mesma penalidade do Art. 165.');
+inf(TH,'Condutor com CNH vencida há 3 meses.','CNH vencida','Art. 162, V, CTB',
+  'gravissima',7,'Multa','Retenção do veículo até apresentação de condutor habilitado',
+  [1,0,0],'Art. 162, V — dirigir com CNH vencida há mais de 30 dias.');
+inf(TH,'Permissão para Dirigir (PPD) com infração gravíssima cometida.','Infração na permissão','Art. 148 e normas do CONTRAN',
+  'gravissima',7,'Multa da infração + não conversão da PPD em CNH definitiva','Conforme a infração',
+  [0,0,0],'A infração gravíssima na permissão impede a conversão automática em CNH definitiva.');
+inf(TH,'Condutor com CNH categoria A dirigindo automóvel (categoria B).','Categoria diversa','Art. 162, III, CTB',
+  'gravissima',7,'Multa e apreensão do veículo','Retenção do veículo até apresentação de condutor habilitado',
+  [1,0,0],'Art. 162, III — categoria A não habilita a conduzir automóvel.');
+inf(TH,'Condutor com CNH categoria B dirigindo motocicleta.','Categoria diversa','Art. 162, III, CTB',
+  'gravissima',7,'Multa e apreensão do veículo','Retenção do veículo até apresentação de condutor habilitado',
+  [1,0,0],'Art. 162, III — é necessária a categoria A para motocicletas.');
+inf(TH,'Condutor se recusa ao teste do bafômetro e não apresenta sinais de embriaguez.','Recusa ao teste','Art. 165-A, CTB',
+  'gravissima',7,'Multa (10x) e suspensão do direito de dirigir por 12 meses','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Art. 165-A — a recusa é infração autônoma, independente de sinais.');
+inf(TH,'Motorista com CNH vencida há 5 anos.','CNH vencida','Art. 162, V, CTB',
+  'gravissima',7,'Multa','Retenção do veículo até apresentação de condutor habilitado',
+  [1,0,0],'Art. 162, V — o vencimento há mais de 30 dias configura a infração.');
+inf(TH,'Condutor com CNH definitiva dirigindo durante suspensão por pontos.','CNH suspensa','Art. 162, II + Art. 263, I, CTB',
+  'gravissima',7,'Multa (3x) e apreensão do veículo','Retenção do veículo e recolhimento da CNH',
+  [1,0,1],'Art. 162, II + Art. 263, I — dirige suspenso, abre-se processo de cassação.');
+
+/* ---------- SINALIZAÇÃO ---------- */
+const TS = 'Sinalização';
+inf(TS,'Veículo avançou o sinal vermelho do semáforo.','Avanço de sinal','Art. 208, CTB',
+  'gravissima',7,'Multa','Nenhuma',[0,0,0],'Art. 208 — avançar o sinal vermelho. Não há medida administrativa automática.');
+inf(TS,'Veículo não parou na placa PARE.','Parada obrigatória','Art. 208, CTB',
+  'gravissima',7,'Multa','Nenhuma',[0,0,0],'Art. 208 — desrespeitar a parada obrigatória.');
+inf(TS,'Condutor não deu preferência ao pedestre que atravessava na faixa.','Preferência do pedestre','Art. 214, I, CTB',
+  'gravissima',7,'Multa','Nenhuma',[0,0,0],'Art. 214, I — deixar de dar preferência ao pedestre na faixa.');
+inf(TS,'Condutor não reduziu a velocidade ao se aproximar da faixa de pedestres.','Falta de redução','Art. 220, III, CTB',
+  'gravissima',7,'Multa','Nenhuma',[0,0,0],'Art. 220, III — não reduzir a velocidade na proximidade de faixa de pedestres.');
+inf(TS,'Ultrapassagem em ponte, na contramão.','Ultrapassagem proibida','Art. 203, CTB',
+  'gravissima',7,'Multa (5x)','Nenhuma',[0,0,0],'Art. 203 — ultrapassar pela contramão em local proibido. Multa 5x.');
+inf(TS,'Ultrapassagem sobre linha amarela contínua.','Linha contínua','Art. 203, CTB',
+  'gravissima',7,'Multa (5x)','Nenhuma',[0,0,0],'Art. 203 — ultrapassagem em desacordo com a sinalização.');
+inf(TS,'Condutor forçou passagem entre veículos em sentidos opostos.','Forçar passagem','Art. 191, CTB',
+  'gravissima',7,'Multa (10x) e suspensão do direito de dirigir','Nenhuma',[0,0,0],'Art. 191 — forçar passagem entre veículos. Multa 10x.');
+inf(TS,'Conversão à esquerda em local com placa de proibição.','Conversão proibida','Art. 207, CTB',
+  'grave',5,'Multa','Nenhuma',[0,0,0],'Art. 207 — executar conversão em desacordo com a sinalização.');
+inf(TS,'Veículo transitando na contramão em via de mão única.','Contramão','Art. 186, CTB',
+  'grave',5,'Multa','Nenhuma',[0,0,0],'Art. 186 — transitar pela contramão em via de mão única.');
+inf(TS,'Condutor transpôs bloqueio policial.','Bloqueio policial','Art. 210, CTB',
+  'gravissima',7,'Multa, apreensão do veículo e suspensão do direito de dirigir','Remoção do veículo e recolhimento da CNH',
+  [0,1,1],'Art. 210 — desobedecer a bloqueio policial.');
+inf(TS,'Condutor não deu passagem a ambulância com sirene ligada.','Falta de passagem a emergência','Art. 189, CTB',
+  'gravissima',7,'Multa','Nenhuma',[0,0,0],'Art. 189 — deixar de dar passagem a veículo de emergência.');
+inf(TS,'Veículo seguindo colado atrás de viatura de emergência.','Seguir veículo de emergência','Art. 190, CTB',
+  'grave',5,'Multa','Nenhuma',[0,0,0],'Art. 190 — seguir veículo de emergência em serviço.');
+inf(TS,'Ultrapassagem pelo acostamento.','Uso indevido do acostamento','Art. 194, CTB',
+  'gravissima',7,'Multa','Nenhuma',[0,0,0],'Art. 194 — transitar com o veículo pelo acostamento.');
+inf(TS,'Retorno em local com placa de proibição.','Retorno proibido','Art. 206, CTB',
+  'grave',5,'Multa','Nenhuma',[0,0,0],'Art. 206 — executar retorno em local proibido pela sinalização.');
+inf(TS,'Veículo parado sobre a faixa de pedestres, no semáforo.','Parada sobre a faixa','Art. 183, CTB',
+  'media',4,'Multa','Nenhuma',[0,0,0],'Art. 183 — parar o veículo sobre a faixa de pedestres.');
+inf(TS,'Condutor não manteve distância de segurança do veículo à frente.','Distância de segurança','Art. 192, CTB',
+  'grave',5,'Multa','Nenhuma',[0,0,0],'Art. 192 — deixar de guardar distância de segurança.');
+inf(TS,'Veículo em alta velocidade na proximidade de escola, sem redução.','Área escolar','Art. 220, CTB',
+  'gravissima',7,'Multa','Nenhuma',[0,0,0],'Art. 220 — deixar de reduzir a velocidade em área escolar.');
+inf(TS,'Velocidade incompatível com a pista molhada por chuva forte.','Velocidade incompatível','Art. 219, CTB',
+  'grave',5,'Multa','Nenhuma',[0,0,0],'Art. 219 — transitar em velocidade incompatível com as condições da via.');
+
+/* ---------- MEDIDAS / REGRAS (teoria) ---------- */
+const TR = 'Medidas';
+teo(TR,'O agente aplica "retenção do veículo" e "remoção do veículo". São a mesma coisa?',
+  ['Sim, são sinônimos','Não: retenção é no local até regularizar; remoção é a ida ao pátio',
+   'Não: retenção é a ida ao pátio; remoção é no local','Só existem em infrações gravíssimas'],
+  1,'Art. 269, I e II do CTB — retenção do veículo (no local, até a regularização) e remoção do veículo (ao pátio).');
+
+teo(TR,'O condutor comete, na mesma abordagem, duas infrações de trânsito. O que acontece?',
+  ['Aplica-se apenas a mais grave','As duas penalidades são aplicadas cumulativamente',
+   'Aplica-se apenas a mais leve','O agente escolhe qual aplicar'],
+  1,'Art. 266 do CTB — as penalidades são aplicadas cumulativamente.');
+
+teo(TR,'Qual é a primeira instância para recorrer de uma multa de trânsito?',
+  ['JARI','CETRAN','CONTRAN','Justiça comum'],
+  0,'Arts. 16 e 17 do CTB — a JARI julga em primeira instância; o CETRAN, em segunda.');
+
+teo(TR,'Quantos pontos vale cada natureza de infração?',
+  ['Leve 3 · média 4 · grave 5 · gravíssima 7','Leve 2 · média 3 · grave 4 · gravíssima 7',
+   'Leve 3 · média 5 · grave 6 · gravíssima 7','Todas valem 5 pontos'],
+  0,'Art. 259 do CTB — leve 3, média 4, grave 5, gravíssima 7.');
+
+teo(TR,'Estacionamento irregular em via de competência municipal: quem autua?',
+  ['Polícia Federal','Órgão municipal de trânsito','DETRAN estadual','Polícia Rodoviária Federal'],
+  1,'Art. 24 do CTB — compete ao órgão municipal autuar nas vias sob sua circunscrição.');
+
+teo(TR,'Suspensão do direito de dirigir por pontuação: quem aplica?',
+  ['O agente, no momento da abordagem','O DETRAN, por meio de processo administrativo',
+   'A Polícia Militar','A JARI, de imediato'],
+  1,'Art. 22 e Art. 261 do CTB — o agente autua; o DETRAN instaura e processa a suspensão.');
+
+teo(TR,'Auto de Infração de Trânsito (AIT) lavrado sem a placa do veículo.',
+  ['Não gera consequência','É requisito do Art. 280: a ausência pode gerar nulidade',
+   'Só vale para infração leve','O agente é multado'],
+  1,'Art. 280 do CTB — o AIT deve conter os requisitos mínimos, sob pena de nulidade.');
+
+teo(TR,'Condutor não identificado no momento da infração. Quem paga a multa?',
+  ['Ninguém','O proprietário do veículo','O município','O agente autuador'],
+  1,'Art. 257 do CTB — não identificado o condutor, a penalidade recai sobre o proprietário.');
+
+teo(TR,'A medida administrativa (retenção/remoção) apaga a multa?',
+  ['Sim, substitui a penalidade','Não: é complementar, a penalidade permanece',
+   'Sim, se regularizar em 24h','Depende do DETRAN'],
+  1,'Art. 269, §2º do CTB — a medida administrativa não substitui a penalidade.');
+
+teo(TR,'Quais artigos do CTB preveem multa multiplicada?',
+  ['x3: 162 e 218 III · x5: 203 · x10: 165, 173 e 191',
+   'x10: 162 · x5: 165 · x3: 203',
+   'Todos os artigos preveem multa x5',
+   'x2: 162 · x4: 165 · x8: 203'],
+  0,'Memorize: x3 (art. 162 e 218, III), x5 (art. 203) e x10 (arts. 165, 173 e 191).');
+
+teo(TR,'Em um sinistro com vítima, qual é a prioridade do agente?',
+  ['Preservar o local do crime','Socorro à vítima em primeiro lugar',
+   'Fotografar toda a cena','Aguardar a perícia antes de agir'],
+  1,'Art. 1º, §5º do CTB — a defesa da vida tem prioridade sobre as demais providências.');
+
+teo(TR,'Condutor comete infração de natureza média e não possui outras infrações nos últimos 12 meses.',
+  ['Multa cheia é obrigatória','Deverá ser aplicada advertência por escrito, a critério da autoridade',
+   'Nada acontece','Suspensão imediata do direito de dirigir'],
+  1,'Art. 267 do CTB — para infrações leves ou médias, sem outras no período, aplica-se advertência por escrito.');
+
+teo(TR,'O condutor regulariza o farol queimado no próprio local da abordagem. A multa é cancelada?',
+  ['Sim, a multa é cancelada','Não: a multa permanece, apenas a retenção cessa',
+   'Só se pagar na hora','Depende da decisão do agente'],
+  1,'A infração já está consumada (Art. 230). A regularização apenas encerra a medida administrativa.');
+
+teo(TR,'Estacionar em local proibido gera remoção do veículo ao pátio?',
+  ['Nunca','Sim, em várias hipóteses do Art. 181 do CTB',
+   'Somente em rodovias','Somente se atrapalhar o trânsito'],
+  1,'Várias hipóteses do Art. 181 do CTB preveem a remoção do veículo.');
+
+teo(TR,'Condutor somou 21 pontos em 12 meses, sendo uma infração gravíssima. Haverá suspensão?',
+  ['Não: o limite com 1 gravíssima é 30 pontos','Sim, suspende automaticamente',
+   'Não: o limite é 40 pontos','Somente se houver reincidência'],
+  0,'Art. 261, I, b do CTB — com 1 infração gravíssima, o limite é de 30 pontos.');
+
+teo(TR,'Condutor somou 19 pontos em 12 meses, com 2 infrações gravíssimas. Haverá suspensão?',
+  ['Sim, suspende','Não: o limite com 2 ou mais gravíssimas é 20 pontos',
+   'Não: o limite é 40 pontos','Somente com 3 gravíssimas'],
+  1,'Art. 261, I, a do CTB — com 2 ou mais gravíssimas, o limite cai para 20 pontos.');
+
+teo(TR,'Condutor atinge exatamente 20 pontos em 12 meses, com 2 infrações gravíssimas.',
+  ['Nada acontece','Abre-se processo de suspensão (limite de 20 pontos)',
+   'Aplica-se apenas advertência','Cassação imediata da CNH'],
+  1,'Art. 261, I, a — atingido o limite, o DETRAN instaura o processo de suspensão.');
+
+teo(TR,'Condutor atinge 40 pontos em 12 meses sem nenhuma infração gravíssima.',
+  ['Não suspende','Suspende: o limite é de 40 pontos',
+   'Só suspende se houver infração grave','Depende de análise do DETRAN'],
+  1,'Art. 261, I, c — sem gravíssimas, o limite é de 40 pontos.');
+
+teo(TR,'Condutor atinge 30 pontos em 12 meses com 1 infração gravíssima.',
+  ['Não suspende','Suspende: o limite é de 30 pontos',
+   'Só com 2 gravíssimas','Gera cassação imediata'],
+  1,'Art. 261, I, b — com 1 gravíssima, o limite é de 30 pontos.');
+
+/* ============================================================
+   2. ESTADO
+   ============================================================ */
+const TEMAS = ['Todos','Velocidade','Motocicletas','Veículos','Habilitação','Sinalização','Medidas'];
+const GRAV_LABEL = {leve:'Leve', media:'Média', grave:'Grave', gravissima:'Gravíssima'};
+
+const STORE_KEY = 'fc_stats_v2';
+const state = {
+  tema:'Todos',
+  lista:[],
+  i:0,
+  q:null,
+  answered:false,
+  sel:{},
+  last:null,
+  stats: JSON.parse(localStorage.getItem(STORE_KEY) || '{"ok":0,"bad":0}')
+};
+
+function saveStats(){
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state.stats)); } catch(e){}
 }
-function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+
+/* ============================================================
+   3. HELPERS
+   ============================================================ */
+function shuffle(a){
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function h(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function toast(msg){
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function(){ el.remove(); }, 1900);
+}
+
+/* Pool de artigos para os distratores */
+const ART_POOL = Array.from(new Set(
+  Q.filter(function(q){ return q.tipo === 'infracao'; }).map(function(q){ return q.enquadramento; })
+));
+
+function artOptions(q){
+  const doTema = Array.from(new Set(
+    Q.filter(function(x){ return x.tipo === 'infracao' && x.tema === q.tema; })
+     .map(function(x){ return x.enquadramento; })
+  )).filter(function(a){ return a !== q.enquadramento; });
+
+  const outros = ART_POOL.filter(function(a){
+    return a !== q.enquadramento && doTema.indexOf(a) === -1;
+  });
+
+  const escolhidos = shuffle(doTema.slice()).slice(0, 3);
+  const faltam = 5 - escolhidos.length;
+  const resto = shuffle(outros.slice()).slice(0, faltam);
+
+  return shuffle([q.enquadramento].concat(escolhidos, resto));
+}
+
+/* ============================================================
+   4. FLUXO
+   ============================================================ */
+function filt(){
+  state.lista = state.tema === 'Todos'
+    ? shuffle(Q.slice())
+    : shuffle(Q.filter(function(x){ return x.tema === state.tema; }));
+  load(0);
+}
+
+function load(i){
+  if (!state.lista.length) return;
+  state.i = i;
+  state.q = state.lista[i];
+  state.answered = false;
+  state.sel = {};
+  state.last = null;
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function setTema(t){
+  if (state.tema === t) return;
+  state.tema = t;
+  filt();
+}
+
+function choose(campo, valor){
+  if (state.answered) return;
+  state.sel[campo] = valor;
+  render();
+}
 
 function check(){
-const q=state.q;
-if(!state.sel.gravidade||!state.sel.pontos){toast("Escolhe gravidade e pontos");return;}
-state.answered=true;
-const okG=state.sel.gravidade===q.gravidade||q.gravidade==="—";
-const okP=String(state.sel.pontos)===String(q.pontos)||q.pontos===0;
-const okRem=(state.sel.remocao==="sim")===!!q.remocao;
-const okRet=(state.sel.retencao==="sim")===!!q.retencao;
-const okArt=state.sel.art&&(norm(state.sel.art).includes(norm(q.enquadramento).slice(0,12))||norm(q.enquadramento).includes(norm(state.sel.art).slice(0,10)));
-const score=Math.round([okG,okP,okRem,okRet,okArt].filter(Boolean).length/5*100);
-if(score>=60)state.stats.ok++;else state.stats.bad++;
-localStorage.setItem("fc_stats",JSON.stringify(state.stats));
-state.last={okG,okP,okRem,okRet,okArt,score};
-render();
+  const q = state.q;
+
+  if (q.tipo === 'infracao'){
+    const obrig = ['gravidade','pontos','retencao','remocao','art'];
+    const falta = obrig.filter(function(k){ return state.sel[k] === undefined; });
+    if (falta.length){ toast('Responda todos os campos antes de ver o gabarito.'); return; }
+
+    const r = {
+      gravidade: state.sel.gravidade === q.gravidade,
+      pontos:    Number(state.sel.pontos) === q.pontos,
+      retencao:  (state.sel.retencao === 'sim') === q.retencao,
+      remocao:   (state.sel.remocao === 'sim') === q.remocao,
+      art:       state.sel.art === q.enquadramento
+    };
+    const acertos = Object.keys(r).filter(function(k){ return r[k]; }).length;
+    state.last = { r:r, acertos:acertos, total:5, score:Math.round(acertos / 5 * 100) };
+  } else {
+    if (state.sel.alt === undefined){ toast('Escolha uma alternativa.'); return; }
+    const ok = Number(state.sel.alt) === q.correta;
+    state.last = { r:{ alt:ok }, acertos: ok ? 1 : 0, total:1, score: ok ? 100 : 0 };
+  }
+
+  state.answered = true;
+  if (state.last.score >= 60) state.stats.ok++; else state.stats.bad++;
+  saveStats();
+  render();
+}
+
+function nextQ(){
+  if (!state.lista.length) return;
+  if (state.i + 1 >= state.lista.length){
+    state.lista = shuffle(state.lista);
+    load(0);
+    toast('Fim da lista — recomeçando embaralhado!');
+    return;
+  }
+  load(state.i + 1);
+}
+
+function prevQ(){
+  if (!state.lista.length) return;
+  load(state.i <= 0 ? state.lista.length - 1 : state.i - 1);
+}
+
+const ACTIONS = {
+  prev: prevQ,
+  next: nextQ,
+  check: check,
+  reset: function(){
+    state.stats = {ok:0, bad:0};
+    saveStats();
+    render();
+    toast('Placar zerado.');
+  }
+};
+
+/* ============================================================
+   5. RENDER
+   ============================================================ */
+function grupo(titulo, campo, opcoes, correto, wide){
+  const cls = wide ? 'opts wide' : 'opts';
+  const botoes = opcoes.map(function(o){
+    const valor = String(o[0]);
+    const label = o[1];
+    const selecionado = state.sel[campo] === valor;
+    let c = 'opt';
+
+    if (state.answered){
+      if (valor === String(correto)) c += ' right';
+      else if (selecionado)          c += ' wrong';
+      else                           c += ' dim';
+    } else if (selecionado){
+      c += ' on';
+    }
+
+    return '<button class="' + c + '" data-g="' + h(campo) + '" data-v="' + h(valor) + '"' +
+           (state.answered ? ' disabled' : '') + '>' + h(label) + '</button>';
+  }).join('');
+
+  return '<label>' + h(titulo) + '</label><div class="' + cls + '">' + botoes + '</div>';
+}
+
+function linhaGabarito(rotulo, valor, ok){
+  let marca = '';
+  if (ok === true)  marca = ' <span style="color:var(--ok)">✓</span>';
+  if (ok === false) marca = ' <span style="color:var(--err)">✗</span>';
+  return '<tr><td>' + h(rotulo) + '</td><td>' + h(valor) + marca + '</td></tr>';
+}
+
+function gabaritoHTML(){
+  const q = state.q, L = state.last;
+  if (!L) return '';
+
+  const bom = L.score >= 60;
+  const cor = L.score >= 80 ? 'ok' : (L.score >= 50 ? 'mid' : 'bad');
+  const titulo = bom ? '✅ Mandou bem!' : '❌ Revisa isso';
+
+  let linhas = '';
+
+  if (q.tipo === 'infracao'){
+    linhas =
+      linhaGabarito('Enquadramento', q.enquadramento, L.r.art) +
+      linhaGabarito('Gravidade', GRAV_LABEL[q.gravidade], L.r.gravidade) +
+      linhaGabarito('Pontos na CNH', q.pontos, L.r.pontos) +
+      linhaGabarito('Penalidade', q.penalidade, null) +
+      linhaGabarito('Medida administrativa', q.medida, null) +
+      linhaGabarito('Retenção do veículo', q.retencao ? 'Sim' : 'Não', L.r.retencao) +
+      linhaGabarito('Remoção ao pátio', q.remocao ? 'Sim' : 'Não', L.r.remocao) +
+      linhaGabarito('Recolhe documento', q.recolhe_doc ? 'Sim' : 'Não', null);
+  } else {
+    linhas = linhaGabarito('Resposta correta', q.alternativas[q.correta], L.r.alt);
+  }
+
+  return '<div class="gab ' + (bom ? '' : 'bad') + '">' +
+    '<div class="score ' + cor + '">' + L.score + '%</div>' +
+    '<h3 style="color:' + (bom ? 'var(--ok)' : 'var(--err)') + '">' + titulo + '</h3>' +
+    '<table>' + linhas + '</table>' +
+    '<p class="fund"><b>Fundamento:</b> ' + h(q.fundamento) + '</p>' +
+  '</div>';
 }
 
 function render(){
-if(!state.q)filt();
-const q=state.q;
-const chips=TEMAS.map(t=>'<button class="chip '+(state.tema===t?'on':'')+'" onclick="setTema(\''+t+'\')">'+t+'</button>').join("");
-document.getElementById("app").innerHTML=
-'<div class="row">'+chips+'</div>'+
-'<div class="card"><div class="meta">'+q.tema+' · '+(state.i+1)+'/'+state.lista.length+' · acertos '+state.stats.ok+' · erros '+state.stats.bad+'</div>'+
-'<div class="sit">'+q.situacao+'</div></div>'+
-'<div class="card"><h2>Sua decisao</h2>'+
-'<label>Gravidade</label><div class="opts">'+opt("gravidade","leve","Leve (3)")+opt("gravidade","media","Media (4)")+opt("gravidade","grave","Grave (5)")+opt("gravidade","gravissima","Gravissima (7)")+'</div>'+
-'<label>Pontos</label><div class="opts">'+opt("pontos","3","3")+opt("pontos","4","4")+opt("pontos","5","5")+opt("pontos","7","7")+'</div>'+
-'<label>Vai para o patio? (remocao)</label><div class="opts">'+opt("remocao","sim","Sim")+opt("remocao","nao","Nao")+'</div>'+
-'<label>Tem retencao?</label><div class="opts">'+opt("retencao","sim","Sim")+opt("retencao","nao","Nao")+'</div>'+
-'<label>Enquadramento</label><div class="opts" style="grid-template-columns:1fr">'+buildArts(q).map(a=>opt("art",a,a)).join("")+'</div>'+
-(!state.answered?'<button class="btn btn-main" onclick="check()">Ver gabarito</button>':'')+
-'<div id="gab"></div></div>';
-if(state.answered)showGab();
-let foot=document.querySelector(".foot");
-if(!foot){foot=document.createElement("div");foot.className="foot";document.body.appendChild(foot);}
-foot.innerHTML='<button class="btn btn-sec" onclick="prevQ()">Anterior</button><button class="btn btn-main" onclick="nextQ()">Proxima</button>';
+  if (!state.q) filt();
+  const q = state.q;
+  if (!q) return;
+
+  const total = state.lista.length;
+  const pos = state.i + 1;
+
+  document.getElementById('qtd').textContent = Q.length;
+  document.getElementById('barra').style.width = Math.round(pos / total * 100) + '%';
+
+  const chips = TEMAS.map(function(t){
+    const n = t === 'Todos' ? Q.length : Q.filter(function(x){ return x.tema === t; }).length;
+    return '<button class="chip ' + (state.tema === t ? 'on' : '') + '" data-tema="' + h(t) + '">' +
+           h(t) + ' <span style="opacity:.6">' + n + '</span></button>';
+  }).join('');
+
+  let corpo = '';
+  if (q.tipo === 'infracao'){
+    corpo =
+      grupo('Gravidade', 'gravidade', [
+        ['leve','Leve · 3 pts'], ['media','Média · 4 pts'],
+        ['grave','Grave · 5 pts'], ['gravissima','Gravíssima · 7 pts']
+      ], q.gravidade) +
+      grupo('Pontos na CNH', 'pontos', [[3,'3'],[4,'4'],[5,'5'],[7,'7']], q.pontos) +
+      grupo('Vai para o pátio? (remoção)', 'remocao', [['sim','Sim'],['nao','Não']], q.remocao ? 'sim' : 'nao') +
+      grupo('Há retenção do veículo?', 'retencao', [['sim','Sim'],['nao','Não']], q.retencao ? 'sim' : 'nao') +
+      grupo('Enquadramento', 'art',
+        artOptions(q).map(function(a){ return [a, a]; }), q.enquadramento, true);
+  } else {
+    corpo = grupo('Escolha a alternativa', 'alt',
+      q.alternativas.map(function(a, i){ return [i, a]; }), q.correta, true);
+  }
+
+  const botaoCheck = state.answered ? '' :
+    '<button class="btn btn-main" style="margin-top:16px" data-act="check">Ver gabarito</button>';
+
+  document.getElementById('app').innerHTML =
+    '<div class="row">' + chips +
+      '<button class="btn btn-sec btn-mini" data-act="reset">Zerar placar</button>' +
+    '</div>' +
+
+    '<div class="card">' +
+      '<div class="meta">' +
+        '<span><b>' + h(q.tema) + '</b> · questão ' + pos + '/' + total + '</span>' +
+        '<span>✓ ' + state.stats.ok + ' · ✗ ' + state.stats.bad + '</span>' +
+      '</div>' +
+      '<div class="sit">' + h(q.situacao) + '</div>' +
+    '</div>' +
+
+    '<div class="card">' +
+      '<h2>Sua decisão</h2>' +
+      corpo +
+      botaoCheck +
+      gabaritoHTML() +
+    '</div>';
 }
 
-function showGab(){
-const q=state.q,L=state.last||{},box=document.getElementById("gab");
-if(!box)return;
-const good=(L.score||0)>=60;
-box.innerHTML='<div class="gab '+(good?'':'bad')+'"><div class="score '+(L.score>=80?'ok':L.score>=50?'mid':'bad')+'">'+(L.score||0)+'%</div>'+
-'<h3 style="color:'+(good?'var(--ok)':'var(--err)')+'">'+(good?'Mandou bem':'Revisa isso')+'</h3><table>'+
-'<tr><td>Enquadramento</td><td><b>'+q.enquadramento+'</b> '+(L.okArt?'✓':'✗')+'</td></tr>'+
-'<tr><td>Gravidade</td><td><b>'+q.gravidade+'</b> '+(L.okG?'✓':'✗')+'</td></tr>'+
-'<tr><td>Pontos</td><td><b>'+q.pontos+'</b> '+(L.okP?'✓':'✗')+'</td></tr>'+
-'<tr><td>Penalidade</td><td>'+q.penalidade+'</td></tr>'+
-'<tr><td>Medida</td><td>'+q.medida+'</td></tr>'+
-'<tr><td>Retencao</td><td>'+(q.retencao?'Sim':'Nao')+' '+(L.okRet?'✓':'✗')+'</td></tr>'+
-'<tr><td>Remocao (patio)</td><td>'+(q.remocao?'Sim':'Nao')+' '+(L.okRem?'✓':'✗')+'</td></tr>'+
-'<tr><td>Recolhe documento</td><td>'+(q.recolhe_doc?'Sim':'Nao')+'</td></tr></table>'+
-'<p style="margin-top:10px;font-size:.88rem;color:#b7c7db">'+q.fundamento+'</p></div>';
-}
+/* ============================================================
+   6. EVENTOS
+   ============================================================ */
+document.addEventListener('click', function(e){
+  const chip = e.target.closest('[data-tema]');
+  if (chip){ setTema(chip.dataset.tema); return; }
 
-filt();render();
+  const opt = e.target.closest('button[data-g]');
+  if (opt){ choose(opt.dataset.g, opt.dataset.v); return; }
+
+  const act = e.target.closest('[data-act]');
+  if (act && ACTIONS[act.dataset.act]) ACTIONS[act.dataset.act]();
+});
+
+document.addEventListener('keydown', function(e){
+  if (e.key === 'ArrowRight') nextQ();
+  else if (e.key === 'ArrowLeft') prevQ();
+  else if (e.key === 'Enter' && !state.answered) check();
+});
+
+/* ============================================================
+   7. INÍCIO
+   ============================================================ */
+filt();
 </script>
 </body>
 </html>
